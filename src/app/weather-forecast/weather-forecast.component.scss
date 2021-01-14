@@ -1,0 +1,49 @@
+.column {
+    width: 100px;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    border-right: 1px solid lightgray;
+}
+
+.forecast-cell {
+    padding: 1em;
+    & img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.hour-cell {
+    height: 2rem;
+    font-weight: bolder;
+}
+
+.temperature-cell {
+    height: 6rem;
+}
+
+.rainfall-cell {
+    height: 4rem;
+    display: flex; 
+    justify-content: flex-end; 
+    flex-direction: column
+}
+
+.rainfall-chart {
+    background-color: #65cafa;
+    bottom: 0;
+    & span {
+        transform: translateY(-100%);
+        display: block;
+    }
+}
+
+.wind-dir-cell {
+    padding: 1.5rem;
+    background-color: #f0f0f0;
+    & img {
+        width: 100%;
+        height: auto;
+    }
+}

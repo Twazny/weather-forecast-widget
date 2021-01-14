@@ -21,7 +21,7 @@ export enum WeatherForecast {
     PartialCloudy = "PARTIAL_CLOUDY"
 }
 
-export enum WindDirection {N,NW,W,SW,S,SE,NE}
+export enum WindDirection {N,NE,E,SE,S,SW,W,NW}
 
 @Injectable({
     providedIn: 'root'

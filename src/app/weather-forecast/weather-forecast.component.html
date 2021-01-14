@@ -1,0 +1,29 @@
+
+<div class="chart-content">
+    <div class="column" *ngFor="let hourData of data">
+        <div class="hour-cell">
+            {{hourData.timestamp | date: 'hh:mm'}}
+        </div>
+        <div class="forecast-cell">
+            <img src="assets/cloudy.png">
+        </div>
+        <div class="temperature-cell">
+            {{ hourData.temperature }}°
+        </div>
+        <div class="rainfall-cell">
+            <div 
+                class="rainfall-chart" 
+                [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
+            >
+                <span>{{ hourData.rainfall }} mm</span>
+            </div>
+        </div>
+        <div class="wind-dir-cell">
+            <img 
+                src="assets/wind-arrow.PNG" 
+                [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
+            >
+            <span>{{ hourData.windDirection }}</span>
+        </div>
+    </div>
+</div>
