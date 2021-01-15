@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core'
 
 export type ForecastData = HourData[]
+// export type ForecastData = {
+//     timestamp: Date,
+//     data: HourData[]
+// }[]
 
 export interface HourData {
     timestamp: Date,
@@ -8,7 +12,7 @@ export interface HourData {
     temperature: number,
     rainfall: number,
     windDirection: WindDirection,
-    windLevel: 'Słaby' | 'Umiarkowany' | 'Silny',
+    windLevel: WindLevel,
     windSpeed: number,
     pressure: number
 }
@@ -21,6 +25,12 @@ export enum WeatherForecast {
     PartialCloudy = "PARTIAL_CLOUDY"
 }
 
+export enum WindLevel {
+    Weak = "Słaby",
+    Medium = "Umiarkowany",
+    Strong = "Silny"
+}
+
 export enum WindDirection { N, NE, E, SE, S, SW, W, NW }
 
 @Injectable({
@@ -28,41 +38,46 @@ export enum WindDirection { N, NE, E, SE, S, SW, W, NW }
 })
 export class WeatherForecastService {
     getForecast(): ForecastData {
-        return this.testData.concat([... this.testData])
+        return this.generateFakeData()
     }
 
-    private testData: ForecastData = [
-        {
-            timestamp: new Date(2020, 0, 14, 0, 0, 0),
-            forecast: WeatherForecast.Cloudy,
-            temperature: 0,
-            rainfall: 0,
-            windDirection: WindDirection.NW,
-            windLevel: "Słaby",
-            windSpeed: 14,
-            pressure: 1014
-        },
-        {
-            timestamp: new Date(2020, 0, 14, 1, 0, 0),
-            forecast: WeatherForecast.Rainy,
-            temperature: 7,
-            rainfall: 0.2,
-            windDirection: WindDirection.W,
-            windLevel: "Słaby",
-            windSpeed: 22,
-            pressure: 1013
-        },
-        {
-            timestamp: new Date(2020, 0, 14, 2, 0, 0),
-            forecast: WeatherForecast.VeryRainy,
-            temperature: 32,
-            rainfall: 0.9,
-            windDirection: WindDirection.NW,
-            windLevel: "Umiarkowany",
-            windSpeed: 26,
-            pressure: 1012
+    private generateFakeData(): ForecastData {
+        const now = new Date()
+        now.setMinutes(0)
+        now.setSeconds(0)
+        now.setMilliseconds(0)
+        
+        let timestamps: string[] = []
+        let data: ForecastData = []
+
+        const forecastarray = ["RAINY",
+        "HEAVY_RAIN",
+        "SUNNY",
+        "CLOUDY",
+        "PARTIAL_CLOUDY"]
+
+        const windlevelarray = ["Słaby", "Umiarkowany", "Silny"]
+
+        let i = 0
+        while (i < 3*24) {
+            let a = new Date(now)
+            a.setHours(now.getHours() + i)
+            i++
+        
+            data.push({
+                timestamp: a,
+                forecast: (forecastarray[Math.floor(Math.random()*forecastarray.length)]) as WeatherForecast,
+                temperature: Math.floor(Math.random()*22),
+                rainfall: Math.floor(Math.random() * 2.5),
+                windDirection: Math.floor(Math.random() * 8),
+                windLevel: (windlevelarray[Math.floor(Math.random()*windlevelarray.length)]) as WindLevel,
+                pressure: Math.floor(Math.random() * 10) + 1020,
+                windSpeed: Math.floor(Math.random() * 25)
+            })
         }
-    ]
+
+        return data
+    }
 }
 
 

@@ -1,36 +1,42 @@
 <div class="chart-content">
-    <div class="column" *ngFor="let hourData of data">
-        <div class="hour-cell">
-            {{hourData.timestamp | date: 'hh:mm'}}
+    <div *ngFor="let day of days" class="day-container">
+        <div class="day-cell">
+            {{day}}
         </div>
-        <div class="forecast-cell">
-            <img src="assets/cloudy.png">
-        </div>
-        <div class="temperature-cell"></div>
-        <div class="rainfall-cell">
-            <div 
-                class="rainfall-chart" 
-                [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
-            >
-                <span>{{ hourData.rainfall }} mm</span>
+        <div class="column" *ngFor="let hourData of data">
+            <div class="hour-cell">
+                {{hourData.timestamp | date: 'hh:mm'}}
             </div>
-        </div>
-        <div class="wind-dir-cell">
-            <div class="wind-arrow">
-                <img 
-                    src="assets/wind-arrow.PNG" 
-                    [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
+            <div class="forecast-cell">
+                <img src="assets/cloudy.png">
+            </div>
+            <div class="temperature-cell"></div>
+            <div class="rainfall-cell">
+                <div 
+                    class="rainfall-chart" 
+                    [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
                 >
+                    <span>{{ hourData.rainfall }} mm</span>
+                </div>
             </div>
-            <span>{{ hourData.windDirection | windDirection}}</span>
+            <div class="wind-dir-cell">
+                <div class="wind-arrow">
+                    <img 
+                        src="assets/wind-arrow.PNG" 
+                        [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
+                    >
+                </div>
+                <span>{{ hourData.windDirection | windDirection}}</span>
+            </div>
+            <div class="wind-speed-cell">
+                <span>{{hourData.windLevel}}</span>
+                <br>
+                <span>{{hourData.windSpeed}} km/h</span>
+            </div>
+            <div class="pressure-cell"></div>
         </div>
-        <div class="wind-speed-cell">
-            <span>{{hourData.windLevel}}</span>
-            <br>
-            <span>{{hourData.windSpeed}} km/h</span>
-        </div>
-        <div class="pressure-cell"></div>
     </div>
+    
     <svg class="temperature-chart">
         <g *ngFor="let hourData of data; index as i">
             <line *ngIf="data[i+1]"

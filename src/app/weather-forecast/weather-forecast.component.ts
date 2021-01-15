@@ -29,11 +29,19 @@ export class WeatherForecastComponent implements OnInit {
   pressChartBottomMargin = 40
   pressYPxRange: number
 
+  days: string[]
+
   constructor() { }
 
   ngOnInit(): void {
     this.scaleTempYAxis()
     this.scalePressYAxis()
+    const values = this.data.map(hourData => {
+      return hourData.timestamp.toLocaleDateString()
+    })
+    this.days = values.filter((value, index, self)=> {
+      return self.indexOf(value) === index;
+    })
   }
 
   private scaleTempYAxis(): void {
