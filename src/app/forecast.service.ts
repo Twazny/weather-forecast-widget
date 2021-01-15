@@ -21,21 +21,21 @@ export enum WeatherForecast {
     PartialCloudy = "PARTIAL_CLOUDY"
 }
 
-export enum WindDirection {N,NE,E,SE,S,SW,W,NW}
+export enum WindDirection { N, NE, E, SE, S, SW, W, NW }
 
 @Injectable({
     providedIn: 'root'
 })
 export class WeatherForecastService {
     getForecast(): ForecastData {
-        return this.testData
+        return this.testData.concat([... this.testData])
     }
 
     private testData: ForecastData = [
         {
-            timestamp: new Date(2020,0,14,0,0,0),
+            timestamp: new Date(2020, 0, 14, 0, 0, 0),
             forecast: WeatherForecast.Cloudy,
-            temperature: 7,
+            temperature: 0,
             rainfall: 0,
             windDirection: WindDirection.NW,
             windLevel: "Słaby",
@@ -43,7 +43,7 @@ export class WeatherForecastService {
             pressure: 1014
         },
         {
-            timestamp: new Date(2020,0,14,1,0,0),
+            timestamp: new Date(2020, 0, 14, 1, 0, 0),
             forecast: WeatherForecast.Rainy,
             temperature: 7,
             rainfall: 0.2,
@@ -53,9 +53,9 @@ export class WeatherForecastService {
             pressure: 1013
         },
         {
-            timestamp: new Date(2020,0,14,2,0,0),
+            timestamp: new Date(2020, 0, 14, 2, 0, 0),
             forecast: WeatherForecast.VeryRainy,
-            temperature: 6,
+            temperature: 32,
             rainfall: 0.9,
             windDirection: WindDirection.NW,
             windLevel: "Umiarkowany",

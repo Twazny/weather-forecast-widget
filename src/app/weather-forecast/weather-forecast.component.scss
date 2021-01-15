@@ -1,49 +1,129 @@
+* {
+  user-select: none;
+  --border-color: rgb(238, 238, 238);
+  --wind-background-color: #f0f0f0;
+}
+
+.chart-content {
+  position: relative;
+  height: 100%;
+}
+
 .column {
-    width: 100px;
-    text-align: center;
-    vertical-align: middle;
-    display: inline-block;
-    border-right: 1px solid lightgray;
+  width: 120px;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+  background-color: transparent;
 }
 
 .forecast-cell {
-    padding: 1em;
-    & img {
-        width: 100%;
-        height: auto;
-    }
+  height: 3rem;
+  padding: 1em;
+  border-right: 2px solid var(--border-color);
+  & img {
+    width: 100%;
+    height: auto;
+  }
 }
 
 .hour-cell {
-    height: 2rem;
-    font-weight: bolder;
+  font-size: 1.6em;
+  height: 2rem;
+  font-weight: 700;
+  border-right: 2px solid var(--border-color);
 }
 
 .temperature-cell {
-    height: 6rem;
+  height: 200px;
+  border-right: 2px solid var(--border-color);
 }
 
 .rainfall-cell {
-    height: 4rem;
-    display: flex; 
-    justify-content: flex-end; 
-    flex-direction: column
+  height: 4rem;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  border-right: 2px solid var(--border-color);
 }
 
 .rainfall-chart {
-    background-color: #65cafa;
-    bottom: 0;
-    & span {
-        transform: translateY(-100%);
-        display: block;
-    }
+  background-color: #65cafa;
+  bottom: 0;
+  & span {
+    transform: translateY(-100%);
+    display: block;
+  }
+}
+
+.wind-arrow {
+  height: 2rem;
+  padding: 1rem 0;
+  & img {
+    width: 50%;
+    height: auto;
+    margin: auto;
+  }
 }
 
 .wind-dir-cell {
-    padding: 1.5rem;
-    background-color: #f0f0f0;
-    & img {
-        width: 100%;
-        height: auto;
-    }
+  height: 6rem;
+  background-color: var(--wind-background-color);
+  & span {
+    line-height: 100%;
+    vertical-align: middle;
+  }
+  border-right: 2px solid white;
+}
+
+.wind-speed-cell {
+  padding-top: 0.5em;
+  padding-bottom: 1rem;
+  background-color: var(--wind-background-color);
+  border-right: 2px solid white;
+}
+
+.pressure-cell {
+  height: 200px;
+  border-right: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.temperature-chart {
+  display: block;
+  position: absolute;
+  top: 7rem;
+  height: 200px;
+  width: 100%;
+  stroke-width: 2;
+  & line {
+    stroke: #f9d348;
+  }
+  & circle {
+    stroke: black;
+    fill: white;
+  }
+  & text {
+    font-size: 2em;
+    font-weight: 500;
+  }
+}
+
+.pressure-chart {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  height: 200px;
+  width: 100%;
+  stroke-width: 2;
+  & line {
+    stroke: black;
+  }
+  & circle {
+    stroke: black;
+    fill: white;
+  }
+  & text {
+    font-weight: 500;
+  }
 }

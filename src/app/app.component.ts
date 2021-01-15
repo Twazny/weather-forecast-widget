@@ -9,11 +9,12 @@ import { ForecastData, WeatherForecastService } from './forecast.service';
 export class AppComponent {
   title = 'weather-forecast';
   data: ForecastData
+
   constructor(
     private forecastService: WeatherForecastService
-  ) {}
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.data = this.forecastService.getForecast()
   }
 }

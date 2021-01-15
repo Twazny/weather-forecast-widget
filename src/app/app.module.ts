@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { WeatherForecastComponent } from './weather-forecast/weather-forecast.component';
+import { WindDirectionPipe } from './wind-direction.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WeatherForecastComponent
+    WeatherForecastComponent,
+    WindDirectionPipe
   ],
   imports: [
     BrowserModule
