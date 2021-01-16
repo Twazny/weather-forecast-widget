@@ -12,13 +12,14 @@ export class LineChartComponent implements OnInit {
   @Input() color: string
   @Input() fontSize: string
   @Input() top: string
+  @Input() height = '200px'
   
   ymax: number
   ymin: number
   yrange: number
 
   chartHeight = 200
-  chartTopMargin = 50
+  chartTopMargin = 80
   chartBottomMargin = 20
   yPxRange: number
 

@@ -1,7 +1,7 @@
 <div class="chart-content">
     <div *ngFor="let dayData of forecastData" class="day-container">
         <div class="day-cell">
-            {{dayData.timestamp}}
+            {{dayData.timestamp | date: 'small'}}
         </div>
         <div class="column" *ngFor="let hourData of dayData.data">
             <div class="hour-cell">
@@ -30,7 +30,7 @@
             </div>
             <div class="wind-speed-cell">
                 <span>{{hourData.windLevel}}</span>
-                <br>
+                <!-- <br> -->
                 <span>{{hourData.windSpeed}} km/h</span>
             </div>
             <div class="pressure-cell"></div>
@@ -41,15 +41,16 @@
         [color]="'#f9d348'"
         [unit]="'°'"
         [columnWidth]="columnWidth"
-        [top]="'20%'"
+        [top]="'165px'"
         [fontSize]="'2em'"
+        [height]="'220px'"
     ></app-line-chart>
     <app-line-chart 
         [values]="pressValues"
         [color]="'black'"
         [unit]="'hPa'"
         [columnWidth]="columnWidth"
-        [top]="'75%'"
-        [fontSize]="'1em'"
+        [top]="'725px'"
+        [fontSize]="'1.3em'"
     ></app-line-chart>
 </div>

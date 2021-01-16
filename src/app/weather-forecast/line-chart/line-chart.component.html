@@ -1,4 +1,4 @@
-<svg class="line-chart" [ngStyle]="{top: top}">
+<svg class="line-chart" [ngStyle]="{top: top, height: height}">
     <g *ngFor="let value of values; index as i">
         <line *ngIf="values[i+1] != undefined"
             [attr.stroke]="color"

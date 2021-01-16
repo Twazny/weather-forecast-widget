@@ -57,7 +57,7 @@ export class WeatherForecastService {
         "CLOUDY",
         "PARTIAL_CLOUDY"]
 
-        const windlevelarray = ["Słaby", "Umiarkowany", "Silny"]
+        const windlevelarray = ["Słaby", "Umiar.", "Silny"]
 
         let i = 0
         while (i < 3*24) {
