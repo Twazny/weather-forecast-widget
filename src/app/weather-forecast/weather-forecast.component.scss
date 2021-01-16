@@ -49,7 +49,6 @@
   }
 }
 
-
 .temperature-cell {
   height: 200px;
   border-right: 2px solid var(--border-color);
@@ -105,43 +104,4 @@
   height: 200px;
   border-right: 2px solid var(--border-color);
   border-bottom: 2px solid var(--border-color);
-}
-
-.temperature-chart {
-  display: block;
-  position: absolute;
-  top: 7rem;
-  height: 200px;
-  width: 100%;
-  stroke-width: 2;
-  & line {
-    stroke: #f9d348;
-  }
-  & circle {
-    stroke: black;
-    fill: white;
-  }
-  & text {
-    font-size: 2em;
-    font-weight: 500;
-  }
-}
-
-.pressure-chart {
-  display: block;
-  position: absolute;
-  bottom: 0;
-  height: 200px;
-  width: 100%;
-  stroke-width: 2;
-  & line {
-    stroke: black;
-  }
-  & circle {
-    stroke: black;
-    fill: white;
-  }
-  & text {
-    font-weight: 500;
-  }
 }

@@ -1,0 +1,14 @@
+.line-chart {
+    display: block;
+    position: absolute;
+    height: 200px;
+    width: 100%;
+    stroke-width: 2;
+    & circle {
+        stroke: black;
+        fill: white;
+    }
+    & text {
+        font-weight: 500;
+    }
+}

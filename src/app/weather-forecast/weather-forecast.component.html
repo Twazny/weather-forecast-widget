@@ -36,51 +36,20 @@
             <div class="pressure-cell"></div>
         </div>
     </div>
-    
-    <svg class="temperature-chart">
-        <g *ngFor="let value of tempValues; index as i">
-            <line *ngIf="tempValues[i+1]"
-                [attr.x1]="getLineX(i)" 
-                [attr.y1]="getTempLineY(value)" 
-                [attr.x2]="getLineX(i + 1)" 
-                [attr.y2]="getTempLineY(tempValues[i+1])">  
-            </line>    
-            <circle 
-                [attr.cx]="getLineX(i)" 
-                [attr.cy]="getTempLineY(value)" 
-                r="8">
-            </circle>
-            <text 
-                [attr.x]="getLineX(i)" 
-                [attr.y]="getTempLineY(value) - 25"
-                dominant-baseline="middle"
-                text-anchor="middle"
-            >
-                {{value}}°
-            </text>
-        </g>
-    </svg>
-    <svg class="pressure-chart">
-        <g *ngFor="let value of pressValues; index as i">
-            <line *ngIf="pressValues[i+1]"
-                [attr.x1]="getLineX(i)" 
-                [attr.y1]="getPressLineY(value)" 
-                [attr.x2]="getLineX(i + 1)" 
-                [attr.y2]="getPressLineY(pressValues[i+1])">  
-            </line>    
-            <circle 
-                [attr.cx]="getLineX(i)" 
-                [attr.cy]="getPressLineY(value)" 
-                r="8">
-            </circle>
-            <text 
-                [attr.x]="getLineX(i)" 
-                [attr.y]="getPressLineY(value) - 25"
-                dominant-baseline="middle"
-                text-anchor="middle"
-            >
-                {{value}} hPa
-            </text>
-        </g>
-    </svg>
+    <app-line-chart 
+        [values]="tempValues"
+        [color]="'#f9d348'"
+        [unit]="'°'"
+        [columnWidth]="columnWidth"
+        [top]="'20%'"
+        [fontSize]="'2em'"
+    ></app-line-chart>
+    <app-line-chart 
+        [values]="pressValues"
+        [color]="'black'"
+        [unit]="'hPa'"
+        [columnWidth]="columnWidth"
+        [top]="'75%'"
+        [fontSize]="'1em'"
+    ></app-line-chart>
 </div>

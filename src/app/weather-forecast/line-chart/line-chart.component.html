@@ -1,0 +1,25 @@
+<svg class="line-chart" [ngStyle]="{top: top}">
+    <g *ngFor="let value of values; index as i">
+        <line *ngIf="values[i+1] != undefined"
+            [attr.stroke]="color"
+            [attr.x1]="getLineX(i)" 
+            [attr.y1]="getLineY(value)" 
+            [attr.x2]="getLineX(i + 1)" 
+            [attr.y2]="getLineY(values[i+1])">  
+        </line>    
+        <circle 
+            [attr.cx]="getLineX(i)" 
+            [attr.cy]="getLineY(value)" 
+            r="8">
+        </circle>
+        <text 
+            [ngStyle]="{fontSize: fontSize}"
+            [attr.x]="getLineX(i)" 
+            [attr.y]="getLineY(value) - 25"
+            dominant-baseline="middle"
+            text-anchor="middle"
+        >
+            {{value}} {{unit}}
+        </text>
+    </g>
+</svg>
