@@ -1,56 +1,75 @@
-<div class="chart-content">
-    <div *ngFor="let dayData of forecastData" class="day-container">
-        <div class="day-cell">
-            {{dayData.timestamp | date: 'small'}}
-        </div>
-        <div class="column" *ngFor="let hourData of dayData.data">
-            <div class="hour-cell">
-                {{hourData.timestamp | date: 'HH:mm'}}
-            </div>
-            <div class="forecast-cell">
-                <img src="assets/cloudy.png">
-            </div>
-            <div class="temperature-cell"></div>
-            <div class="rainfall-cell">
-                <div 
-                    class="rainfall-chart" 
-                    [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
-                >
-                    <span>{{ hourData.rainfall }} mm</span>
+<div class="main-container">
+    <div class="legend">
+        <div style="height: 35px;">Dzień</div>
+        <div style="height: 60px;">Godzina</div>
+        <div style="height: 70px;">Prognoza</div>
+        <div style="height: 220px;">Temperatura</div>
+        <div style="height: 120px;">Opady</div>
+        <div style="height: 120px;">Kierunek wiatru</div>
+        <div style="height: 100px;">Prędkość wiatru</div>
+        <div style="height: 200px;">Ciśnienie</div>
+    </div>
+    <div class="chart-container" style="position: relative;">
+        <div class="overlay"></div>
+        <div class="chart-scroll">    
+            <div class="chart-content">
+                <div *ngFor="let dayData of forecastData" class="day-container">
+                    <div class="day-cell">
+                        {{dayData.timestamp | date: 'small'}}
+                    </div>
+                    <div class="column" *ngFor="let hourData of dayData.data">
+                        <div class="hour-cell">
+                            {{hourData.timestamp | date: 'HH:mm'}}
+                        </div>
+                        <div class="forecast-cell">
+                            <img src="assets/cloudy.png">
+                        </div>
+                        <div class="temperature-cell"></div>
+                        <div class="rainfall-cell">
+                            <div 
+                                class="rainfall-chart" 
+                                [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
+                            >
+                                <span>{{ hourData.rainfall }} mm</span>
+                            </div>
+                        </div>
+                        <div class="wind-dir-cell">
+                            <div class="wind-arrow">
+                                <img 
+                                    src="assets/wind-arrow.PNG" 
+                                    [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
+                                >
+                            </div>
+                            <span>{{ hourData.windDirection | windDirection}}</span>
+                        </div>
+                        <div class="wind-speed-cell">
+                            <span>{{hourData.windLevel}}</span>
+                            <span>{{hourData.windSpeed}} km/h</span>
+                        </div>
+                        <div class="pressure-cell"></div>
+                    </div>
                 </div>
+                <app-line-chart 
+                    [values]="tempValues"
+                    [color]="'#f9d348'"
+                    [unit]="'°'"
+                    [columnWidth]="columnWidth"
+                    [top]="'165px'"
+                    [fontSize]="'2em'"
+                    [height]="'220px'"
+                ></app-line-chart>
+                <app-line-chart 
+                    [values]="pressValues"
+                    [color]="'black'"
+                    [unit]="'hPa'"
+                    [columnWidth]="columnWidth"
+                    [top]="'725px'"
+                    [fontSize]="'1.3em'"
+                ></app-line-chart>
             </div>
-            <div class="wind-dir-cell">
-                <div class="wind-arrow">
-                    <img 
-                        src="assets/wind-arrow.PNG" 
-                        [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
-                    >
-                </div>
-                <span>{{ hourData.windDirection | windDirection}}</span>
-            </div>
-            <div class="wind-speed-cell">
-                <span>{{hourData.windLevel}}</span>
-                <!-- <br> -->
-                <span>{{hourData.windSpeed}} km/h</span>
-            </div>
-            <div class="pressure-cell"></div>
         </div>
     </div>
-    <app-line-chart 
-        [values]="tempValues"
-        [color]="'#f9d348'"
-        [unit]="'°'"
-        [columnWidth]="columnWidth"
-        [top]="'165px'"
-        [fontSize]="'2em'"
-        [height]="'220px'"
-    ></app-line-chart>
-    <app-line-chart 
-        [values]="pressValues"
-        [color]="'black'"
-        [unit]="'hPa'"
-        [columnWidth]="columnWidth"
-        [top]="'725px'"
-        [fontSize]="'1.3em'"
-    ></app-line-chart>
+        
+    
+    
 </div>
