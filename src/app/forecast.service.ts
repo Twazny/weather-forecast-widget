@@ -1,10 +1,11 @@
+import { CommentStmt } from '@angular/compiler'
 import { Injectable } from '@angular/core'
 
-export type ForecastData = HourData[]
-// export type ForecastData = {
-//     timestamp: Date,
-//     data: HourData[]
-// }[]
+// export type ForecastData = HourData[]
+export type ForecastData = {
+    timestamp: Date,
+    data: HourData[]
+}[]
 
 export interface HourData {
     timestamp: Date,
@@ -62,9 +63,24 @@ export class WeatherForecastService {
         while (i < 3*24) {
             let a = new Date(now)
             a.setHours(now.getHours() + i)
+            let b = new Date(a)
+            b.setHours(0)
             i++
-        
-            data.push({
+
+            const dayItem = data.find(day => {
+                return day.timestamp.getTime() === b.getTime()
+            })
+            if (!dayItem) {
+                data.push({
+                    timestamp: b,
+                    data: []
+                })
+            }
+            const dayData = data.find(day => {
+                return day.timestamp.getTime() === b.getTime()
+            }).data
+            
+            dayData.push({
                 timestamp: a,
                 forecast: (forecastarray[Math.floor(Math.random()*forecastarray.length)]) as WeatherForecast,
                 temperature: Math.floor(Math.random()*22),
@@ -75,7 +91,7 @@ export class WeatherForecastService {
                 windSpeed: Math.floor(Math.random() * 25)
             })
         }
-
+        
         return data
     }
 }

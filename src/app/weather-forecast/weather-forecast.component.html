@@ -1,11 +1,11 @@
 <div class="chart-content">
-    <div *ngFor="let day of days" class="day-container">
+    <div *ngFor="let dayData of forecastData" class="day-container">
         <div class="day-cell">
-            {{day}}
+            {{dayData.timestamp}}
         </div>
-        <div class="column" *ngFor="let hourData of data">
+        <div class="column" *ngFor="let hourData of dayData.data">
             <div class="hour-cell">
-                {{hourData.timestamp | date: 'hh:mm'}}
+                {{hourData.timestamp | date: 'HH:mm'}}
             </div>
             <div class="forecast-cell">
                 <img src="assets/cloudy.png">
@@ -38,48 +38,48 @@
     </div>
     
     <svg class="temperature-chart">
-        <g *ngFor="let hourData of data; index as i">
-            <line *ngIf="data[i+1]"
+        <g *ngFor="let value of tempValues; index as i">
+            <line *ngIf="tempValues[i+1]"
                 [attr.x1]="getLineX(i)" 
-                [attr.y1]="getTempLineY(hourData)" 
+                [attr.y1]="getTempLineY(value)" 
                 [attr.x2]="getLineX(i + 1)" 
-                [attr.y2]="getTempLineY(data[i+1])">  
+                [attr.y2]="getTempLineY(tempValues[i+1])">  
             </line>    
             <circle 
                 [attr.cx]="getLineX(i)" 
-                [attr.cy]="getTempLineY(hourData)" 
+                [attr.cy]="getTempLineY(value)" 
                 r="8">
             </circle>
             <text 
                 [attr.x]="getLineX(i)" 
-                [attr.y]="getTempLineY(hourData) - 25"
+                [attr.y]="getTempLineY(value) - 25"
                 dominant-baseline="middle"
                 text-anchor="middle"
             >
-                {{hourData.temperature}}°
+                {{value}}°
             </text>
         </g>
     </svg>
     <svg class="pressure-chart">
-        <g *ngFor="let hourData of data; index as i">
-            <line *ngIf="data[i+1]"
+        <g *ngFor="let value of pressValues; index as i">
+            <line *ngIf="pressValues[i+1]"
                 [attr.x1]="getLineX(i)" 
-                [attr.y1]="getPressLineY(hourData)" 
+                [attr.y1]="getPressLineY(value)" 
                 [attr.x2]="getLineX(i + 1)" 
-                [attr.y2]="getPressLineY(data[i+1])">  
+                [attr.y2]="getPressLineY(pressValues[i+1])">  
             </line>    
             <circle 
                 [attr.cx]="getLineX(i)" 
-                [attr.cy]="getPressLineY(hourData)" 
+                [attr.cy]="getPressLineY(value)" 
                 r="8">
             </circle>
             <text 
                 [attr.x]="getLineX(i)" 
-                [attr.y]="getPressLineY(hourData) - 25"
+                [attr.y]="getPressLineY(value) - 25"
                 dominant-baseline="middle"
                 text-anchor="middle"
             >
-                {{hourData.pressure}} hPa
+                {{value}} hPa
             </text>
         </g>
     </svg>

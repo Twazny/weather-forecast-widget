@@ -7,7 +7,7 @@ import { ForecastData, HourData } from '../forecast.service'
   styleUrls: ['./weather-forecast.component.scss']
 })
 export class WeatherForecastComponent implements OnInit {
-  @Input() data: ForecastData
+  @Input('data') forecastData: ForecastData
   @Input() timeWindow = 8
   @Input() columnWidth = 120
 
@@ -20,6 +20,8 @@ export class WeatherForecastComponent implements OnInit {
   tempChartBottomMargin = 20
   tempYPxRange: number
 
+  tempValues: number[] = []
+
   pressYmax: number
   pressYmin: number
   pressYrange: number
@@ -29,6 +31,8 @@ export class WeatherForecastComponent implements OnInit {
   pressChartBottomMargin = 40
   pressYPxRange: number
 
+  pressValues: number[] = []
+
   days: string[]
 
   constructor() { }
@@ -36,7 +40,7 @@ export class WeatherForecastComponent implements OnInit {
   ngOnInit(): void {
     this.scaleTempYAxis()
     this.scalePressYAxis()
-    const values = this.data.map(hourData => {
+    const values = this.forecastData.map(hourData => {
       return hourData.timestamp.toLocaleDateString()
     })
     this.days = values.filter((value, index, self)=> {
@@ -45,11 +49,14 @@ export class WeatherForecastComponent implements OnInit {
   }
 
   private scaleTempYAxis(): void {
-    const values = this.data.map(hourData => {
-      return hourData.temperature
+    this.forecastData.forEach(dayData => {
+      this.tempValues.push(...dayData.data.map(hourData => {
+        return hourData.temperature
+      }))
     })
-    this.tempYmax = Math.max(...values)
-    this.tempYmin = Math.min(...values)
+
+    this.tempYmax = Math.max(...this.tempValues)
+    this.tempYmin = Math.min(...this.tempValues)
 
     this.tempYrange = this.tempYmax - this.tempYmin
     const margins = this.tempChartTopMargin + this.tempChartBottomMargin
@@ -57,11 +64,13 @@ export class WeatherForecastComponent implements OnInit {
   }
 
   private scalePressYAxis(): void {
-    const values = this.data.map(hourData => {
-      return hourData.pressure
+    this.forecastData.forEach(dayData => {
+      this.pressValues.push(...dayData.data.map(hourData => {
+        return hourData.pressure
+      }))
     })
-    this.pressYmax = Math.max(...values)
-    this.pressYmin = Math.min(...values)
+    this.pressYmax = Math.max(...this.pressValues)
+    this.pressYmin = Math.min(...this.pressValues)
 
     this.pressYrange = this.pressYmax - this.pressYmin
     const margins = this.pressChartTopMargin + this.pressChartBottomMargin
@@ -72,15 +81,15 @@ export class WeatherForecastComponent implements OnInit {
     return 0.5 * this.columnWidth + this.columnWidth * i
   }
 
-  getTempLineY(hourData: HourData): number {
+  getTempLineY(value: number): number {
     return this.tempYPxRange -
-      ((hourData.temperature - this.tempYmin) * this.tempYPxRange / this.tempYrange) +
+      ((value - this.tempYmin) * this.tempYPxRange / this.tempYrange) +
       this.tempChartTopMargin
   }
 
-  getPressLineY(hourData: HourData): number {
+  getPressLineY(value: number): number {
     return this.pressYPxRange -
-      ((hourData.pressure - this.pressYmin) * this.pressYPxRange / this.pressYrange) +
+      ((value - this.pressYmin) * this.pressYPxRange / this.pressYrange) +
       this.pressChartTopMargin
   }
 }
