@@ -83,9 +83,11 @@ export class WeatherForecastComponent implements OnInit {
   }
 
   private scrollToNearest(pageX: number): void {
-    const mod = this.scroll.scrollLeft%this.columnWidth
-    const scrollBy = mod > 0.5*this.columnWidth ? this.columnWidth - mod : -mod
-    this.scroll.scrollBy({left: scrollBy, behavior: 'smooth'})  
+    const rem = this.scroll.scrollLeft%this.columnWidth
+    if (rem > 0) {
+      const scrollBy = rem > 0.5*this.columnWidth ? this.columnWidth - rem : -rem
+      this.scroll.scrollBy({left: scrollBy, behavior: 'smooth'})  
+    }
   }
 
   private get scroll(): HTMLDivElement {

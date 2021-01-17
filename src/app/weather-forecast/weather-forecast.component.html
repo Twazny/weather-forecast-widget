@@ -38,9 +38,10 @@
             (scroll)="onScroll($event)"
         >    
             <div class="chart-content">
-                <div *ngFor="let dayData of forecastData" class="day-container">
+                <div *ngFor="let dayData of forecastData; index as i" class="day-container">
                     <div class="day-cell">
-                        {{dayData.timestamp | date: 'small'}}
+                        <span *ngIf="i===1">JUTRO</span>
+                        <span *ngIf="i>1">{{dayData.timestamp.toLocaleDateString()}}</span>
                     </div>
                     <div class="column" *ngFor="let hourData of dayData.data">
                         <div class="hour-cell">
@@ -53,7 +54,7 @@
                         <div class="rainfall-cell">
                             <div 
                                 class="rainfall-chart" 
-                                [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
+                                [ngStyle]="{'height': hourData.rainfall * 120/5 + '%'}"
                             >
                                 <span>{{ hourData.rainfall }} mm</span>
                             </div>
@@ -86,7 +87,7 @@
                 <app-line-chart 
                     [values]="pressValues"
                     [color]="'black'"
-                    [unit]="'hPa'"
+                    [unit]="' hPa'"
                     [columnWidth]="columnWidth"
                     [top]="'725px'"
                     [fontSize]="'1.3em'"

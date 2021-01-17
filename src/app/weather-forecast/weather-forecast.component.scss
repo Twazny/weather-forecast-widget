@@ -2,6 +2,7 @@
   user-select: none;
   --border-color: rgb(238, 238, 238);
   --wind-background-color: #f0f0f0;
+  --gray-color: rgb(136,136,136);
 }
 
 .main-container {
@@ -9,7 +10,7 @@
 }
 
 .legend {
-  color: gray;
+  color: var(--gray-color);
   font-size: 1.2em;
   font-weight: 500;
   width: 140px;
@@ -82,11 +83,19 @@
   overflow-x: scroll;
   position: relative;
   transition: background-color 1s;
+  
   // scroll-snap-type: mandatory;
-  // scroll-behavior: ;
+  // scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  
+  // firefox definition
+  scrollbar-color:  rgba(100,100,100,0.5)  rgba(100,100,100,0.2);
+  scrollbar-width: thin;
+
+  // chrome, safari definition
   &::-webkit-scrollbar {
     height: 5px;
+    transition: background-color 1s;
   }
   &::-webkit-scrollbar-track {
     transition: background-color 1s;
@@ -96,13 +105,27 @@
     transition: background-color 1s;
     background-color: rgba(100,100,100,0.5);
   }
-  &.hidden::-webkit-scrollbar-track {
-    transition: background-color 1s;
-    background-color: rgba(100,100,100,0);
-  }
-  &.hidden::-webkit-scrollbar-thumb {
-    transition: background-color 1s;
-    background-color: rgba(100,100,100,0);
+
+  &.hidden {
+    // firefox definition
+    scrollbar-color:  rgba(100,100,100,0)  rgba(100,100,100,0);
+    scrollbar-width: thin;
+    
+    // chrome, safari definition
+    &::-webkit-scrollbar {
+      height: 5px;
+      transition: background-color 1s;
+    }
+    &::-webkit-scrollbar-track {
+      position: absolute;
+      bottom: 0;
+      transition: background-color 1s;
+      background-color: rgba(100,100,100,0);
+    }
+    &::-webkit-scrollbar-thumb {
+      transition: background-color 1s;
+      background-color: rgba(100,100,100,0);
+    }
   }
 }
 
@@ -129,6 +152,9 @@
 }
 
 .day-cell {
+  color: var(--gray-color);
+  font-size: 1.2em;
+  font-weight: 500;
   height: 35px;
   margin-left: 1em;
   border-right: 2px solid var(--border-color);
