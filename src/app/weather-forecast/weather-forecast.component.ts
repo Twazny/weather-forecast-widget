@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ForecastData, HourData } from '../forecast.service'
 
 @Component({
@@ -11,10 +11,18 @@ export class WeatherForecastComponent implements OnInit {
   @Input() timeWindow = 8
   @Input() columnWidth = 120
 
+  @ViewChild('scrollElement') scrollRef: ElementRef
+
   tempValues: number[] = []
   pressValues: number[] = []
 
   days: string[]
+
+  scrolling = false
+  dragging = false
+
+  scrollStartX: number
+  currScrollLeft: number
 
   constructor() { }
 
@@ -30,6 +38,59 @@ export class WeatherForecastComponent implements OnInit {
     this.preparesPressValues()
     this.prepareTempValues()
   }
+
+  onButtonScroll(dir: 'left' | 'right'): void {
+    this.scroll.scrollBy({
+      left: dir==='right' ? this.columnWidth : -this.columnWidth,
+      behavior:'smooth'
+    })
+  }
+
+  onScroll(event: Event): void {
+    if (!this.scrolling) {
+      this.scrolling = true
+      setTimeout(() => {
+        this.scrolling = false
+      }, 1000)
+    }
+  }
+
+  onMouseDown(event: MouseEvent): void {
+    this.dragging = true
+    this.scrollStartX = event.pageX - this.scroll.offsetLeft;
+    this.currScrollLeft = this.scroll.scrollLeft;
+  }
+
+  onMouseMove(event: MouseEvent): void {
+    if(this.dragging) {
+      event.preventDefault()
+      const x = event.pageX - this.scroll.offsetLeft;
+      const walk = x - this.scrollStartX;
+      this.scroll.scrollLeft = this.currScrollLeft - walk;
+    }
+  }
+
+  onMouseUp(event: MouseEvent): void {
+    this.dragging = false
+    this.scrollToNearest(event.pageX)
+  }
+
+  onMouseLeave(event: MouseEvent): void {
+    if(this.dragging) {
+      this.dragging = false
+      this.scrollToNearest(event.pageX)
+    }
+  }
+
+  private scrollToNearest(pageX: number): void {
+    const mod = this.scroll.scrollLeft%this.columnWidth
+    const scrollBy = mod > 0.5*this.columnWidth ? this.columnWidth - mod : -mod
+    this.scroll.scrollBy({left: scrollBy, behavior: 'smooth'})  
+  }
+
+  private get scroll(): HTMLDivElement {
+    return this.scrollRef.nativeElement 
+  } 
 
   private prepareTempValues(): void {
     this.forecastData.forEach(dayData => {

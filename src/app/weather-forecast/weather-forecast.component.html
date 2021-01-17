@@ -5,13 +5,38 @@
         <div style="height: 70px;">Prognoza</div>
         <div style="height: 220px;">Temperatura</div>
         <div style="height: 120px;">Opady</div>
-        <div style="height: 120px;">Kierunek wiatru</div>
-        <div style="height: 100px;">Prędkość wiatru</div>
+        <div style="height: 120px;">Kierunek<br>wiatru</div>
+        <div style="height: 100px;">Prędkość<br>wiatru</div>
         <div style="height: 200px;">Ciśnienie</div>
     </div>
-    <div class="chart-container" style="position: relative;">
-        <div class="overlay"></div>
-        <div class="chart-scroll">    
+    <div class="chart-container" [ngStyle]="{'width': timeWindow*columnWidth + 'px'}" style="position: relative;">
+        <div class="overlay"
+            (mousedown)="onMouseDown($event)"
+            (mousemove)="onMouseMove($event)"
+            (mouseup)="onMouseUp($event)"
+            (mouseleave)="onMouseLeave($event)"
+        >
+            <button class='nav-button nav-button-left' (click)="onButtonScroll('left')">
+                <svg height="25" width="25">
+                    <polygon points="0,12.5 25,25 25,0"/>
+                </svg>
+            </button>
+            <button class='nav-button nav-button-right' (click)="onButtonScroll('right')">
+                <svg height="25" width="25">
+                    <polygon points="0,25 25,12.5 0,0"/>
+                </svg>
+            </button>
+        </div>
+        <div 
+            class="chart-scroll" 
+            [ngClass]="{'hidden': !scrolling}"
+            [ngStyle]="{
+                'scroll-behavior': true ? 'unset' : 'smooth',
+                'scroll-snap-type': true ? 'none' : 'x mandatory'
+            }"
+            #scrollElement 
+            (scroll)="onScroll($event)"
+        >    
             <div class="chart-content">
                 <div *ngFor="let dayData of forecastData" class="day-container">
                     <div class="day-cell">
