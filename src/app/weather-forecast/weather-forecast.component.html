@@ -9,10 +9,17 @@
         <div style="height: 100px;">Prędkość<br>wiatru</div>
         <div style="height: 200px;">Ciśnienie</div>
     </div>
-    <div class="chart-container" [ngStyle]="{'width': timeWindow*columnWidth + 'px'}" style="position: relative;">
-        <div class="overlay"
+    <div class="chart-container" 
+        [ngStyle]="{
+            'width': timeWindow*columnWidth + 'px', 
+            'padding-left': leftBounce + 'px',
+            'padding-right': rightBounce + 'px',
+            'transition': !leftBounce && !rightBounce ? 'padding-left 1s, padding-right 1s' : 'none'
+        }" style="position: relative;">
+        <!-- (mousemove)="onMouseMove($event)" -->
+        <div class="overlay" #overlay
             (mousedown)="onMouseDown($event)"
-            (mousemove)="onMouseMove($event)"
+            
             (mouseup)="onMouseUp($event)"
             (mouseleave)="onMouseLeave($event)"
         >
@@ -54,7 +61,7 @@
                         <div class="rainfall-cell">
                             <div 
                                 class="rainfall-chart" 
-                                [ngStyle]="{'height': hourData.rainfall * 120/5 + '%'}"
+                                [ngStyle]="{'height': hourData.rainfall * 75/rainfallMax + '%'}"
                             >
                                 <span>{{ hourData.rainfall }} mm</span>
                             </div>

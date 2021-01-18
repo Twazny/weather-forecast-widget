@@ -1,4 +1,6 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { fromEvent, interval } from 'rxjs';
+import { throttle } from 'rxjs/operators'
 import { ForecastData, HourData } from '../forecast.service'
 
 @Component({
@@ -6,43 +8,55 @@ import { ForecastData, HourData } from '../forecast.service'
   templateUrl: './weather-forecast.component.html',
   styleUrls: ['./weather-forecast.component.scss']
 })
-export class WeatherForecastComponent implements OnInit {
+export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChanges {
   @Input('data') forecastData: ForecastData
   @Input() timeWindow = 8
   @Input() columnWidth = 120
 
   @ViewChild('scrollElement') scrollRef: ElementRef
+  @ViewChild('overlay') overaly: ElementRef
 
   tempValues: number[] = []
   pressValues: number[] = []
-
-  days: string[]
+  rainfallValues: number[] = []
+  rainfallMax: number
 
   scrolling = false
   dragging = false
-
   scrollStartX: number
   currScrollLeft: number
+  leftBounce = 0
+  rightBounce = 0
+  position = 0
+  scrollPositions: number
 
   constructor() { }
 
   ngOnInit(): void {
-    this.prepareTempValues()
-    this.preparesPressValues()
-    const values = this.forecastData.map(hourData => {
-      return hourData.timestamp.toLocaleDateString()
-    })
-    this.days = values.filter((value, index, self)=> {
-      return self.indexOf(value) === index;
-    })
-    this.preparesPressValues()
-    this.prepareTempValues()
+    this.prepareValues()
+  }
+
+  ngAfterViewInit(): void {
+    fromEvent(this.overaly.nativeElement, 'mousemove').pipe(
+      throttle(event => interval(1))
+    ).subscribe((event: MouseEvent) => this.onMouseMove(event))
+  }
+
+  ngOnChanges(): void {
+    this.prepareValues()
   }
 
   onButtonScroll(dir: 'left' | 'right'): void {
-    this.scroll.scrollBy({
-      left: dir==='right' ? this.columnWidth : -this.columnWidth,
-      behavior:'smooth'
+    if (dir === 'left' && this.position > 0) {
+      this.position--
+    } else if (dir === 'right' && this.position < this.scrollPositions) {
+      this.position++
+    } else {
+      return
+    }
+    this.scroll.scrollTo({
+      left: this.columnWidth * this.position,
+      behavior: 'smooth'
     })
   }
 
@@ -62,51 +76,66 @@ export class WeatherForecastComponent implements OnInit {
   }
 
   onMouseMove(event: MouseEvent): void {
-    if(this.dragging) {
+    if (this.dragging) {
       event.preventDefault()
-      const x = event.pageX - this.scroll.offsetLeft;
+      const x = event.pageX;
       const walk = x - this.scrollStartX;
-      this.scroll.scrollLeft = this.currScrollLeft - walk;
+
+      const diff = this.currScrollLeft - walk
+
+      if (diff <= 0) {
+        this.leftBounce = -diff
+      } else {
+        this.scroll.scrollLeft = diff
+        this.leftBounce = 0
+      }
+
+      if (this.scroll.offsetWidth + diff > this.scroll.scrollWidth) {
+        this.rightBounce = -walk
+      } else {
+        this.scroll.scrollLeft = diff
+        this.rightBounce = 0
+      }
     }
   }
 
   onMouseUp(event: MouseEvent): void {
     this.dragging = false
+    this.leftBounce = 0
+    this.rightBounce = 0
     this.scrollToNearest(event.pageX)
+
   }
 
   onMouseLeave(event: MouseEvent): void {
-    if(this.dragging) {
+    if (this.dragging) {
       this.dragging = false
+      this.leftBounce = 0
+      this.rightBounce = 0
       this.scrollToNearest(event.pageX)
     }
   }
 
-  private scrollToNearest(pageX: number): void {
-    const rem = this.scroll.scrollLeft%this.columnWidth
-    if (rem > 0) {
-      const scrollBy = rem > 0.5*this.columnWidth ? this.columnWidth - rem : -rem
-      this.scroll.scrollBy({left: scrollBy, behavior: 'smooth'})  
-    }
-  }
-
   private get scroll(): HTMLDivElement {
-    return this.scrollRef.nativeElement 
-  } 
-
-  private prepareTempValues(): void {
-    this.forecastData.forEach(dayData => {
-      this.tempValues.push(...dayData.data.map(hourData => {
-        return hourData.temperature
-      }))
-    })
+    return this.scrollRef.nativeElement
   }
 
-  private preparesPressValues(): void {
+  private scrollToNearest(pageX: number): void {
+    const pos = Math.round(this.scroll.scrollLeft / this.columnWidth)
+    this.scroll.scrollTo({ left: pos * this.columnWidth, behavior: 'smooth' })
+    this.position = pos
+  }
+
+  private prepareValues(): void {
     this.forecastData.forEach(dayData => {
-      this.pressValues.push(...dayData.data.map(hourData => {
-        return hourData.pressure
-      }))
+      dayData.data.forEach(hourData => {
+        this.tempValues.push(hourData.temperature)
+        this.pressValues.push(hourData.pressure)
+        this.rainfallValues.push(hourData.rainfall)
+      })
     })
+    const max = Math.max(...this.rainfallValues)
+    this.rainfallMax = max > 5 ? max : 5
+    this.scrollPositions = this.rainfallValues.length - this.timeWindow
   }
 }

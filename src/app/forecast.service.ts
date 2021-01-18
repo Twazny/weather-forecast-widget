@@ -47,20 +47,20 @@ export class WeatherForecastService {
         now.setMinutes(0)
         now.setSeconds(0)
         now.setMilliseconds(0)
-        
+
         let timestamps: string[] = []
         let data: ForecastData = []
 
         const forecastarray = ["RAINY",
-        "HEAVY_RAIN",
-        "SUNNY",
-        "CLOUDY",
-        "PARTIAL_CLOUDY"]
+            "HEAVY_RAIN",
+            "SUNNY",
+            "CLOUDY",
+            "PARTIAL_CLOUDY"]
 
         const windlevelarray = ["Słaby", "Umiar.", "Silny"]
 
         let i = 0
-        while (i < 3*24) {
+        while (i < 3 * 24) {
             let a = new Date(now)
             a.setHours(now.getHours() + i)
             let b = new Date(a)
@@ -79,19 +79,19 @@ export class WeatherForecastService {
             const dayData = data.find(day => {
                 return day.timestamp.getTime() === b.getTime()
             }).data
-            
+
             dayData.push({
                 timestamp: a,
-                forecast: (forecastarray[Math.floor(Math.random()*forecastarray.length)]) as WeatherForecast,
-                temperature: Math.floor(Math.random()*22),
+                forecast: (forecastarray[Math.floor(Math.random() * forecastarray.length)]) as WeatherForecast,
+                temperature: Math.floor(Math.random() * 22),
                 rainfall: Math.floor(Math.random() * 2.5),
                 windDirection: Math.floor(Math.random() * 8),
-                windLevel: (windlevelarray[Math.floor(Math.random()*windlevelarray.length)]) as WindLevel,
+                windLevel: (windlevelarray[Math.floor(Math.random() * windlevelarray.length)]) as WindLevel,
                 pressure: Math.floor(Math.random() * 10) + 1020,
                 windSpeed: Math.floor(Math.random() * 25)
             })
         }
-        
+
         return data
     }
 }
