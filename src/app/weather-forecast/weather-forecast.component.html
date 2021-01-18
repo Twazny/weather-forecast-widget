@@ -55,7 +55,7 @@
                             {{hourData.timestamp | date: 'HH:mm'}}
                         </div>
                         <div class="forecast-cell">
-                            <img src="assets/cloudy.png">
+                            <img [src]="'assets/' + hourData.forecast + '.png'">
                         </div>
                         <div class="temperature-cell"></div>
                         <div class="rainfall-cell">
@@ -63,13 +63,13 @@
                                 class="rainfall-chart" 
                                 [ngStyle]="{'height': hourData.rainfall * 75/rainfallMax + '%'}"
                             >
-                                <span>{{ hourData.rainfall }} mm</span>
+                                <span>{{ hourData.rainfall | number:undefined:'pl' }} mm</span>
                             </div>
                         </div>
                         <div class="wind-dir-cell">
                             <div class="wind-arrow">
                                 <img 
-                                    src="assets/wind-arrow.PNG" 
+                                    src="assets/wind-arrow.png" 
                                     [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
                                 >
                             </div>

@@ -1,7 +1,11 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import pl from '@angular/common/locales/pl';
 import { fromEvent, interval } from 'rxjs';
 import { throttle } from 'rxjs/operators'
 import { ForecastData, HourData } from '../forecast.service'
+
+registerLocaleData(pl, 'pl');
 
 @Component({
   selector: 'app-weather-forecast',

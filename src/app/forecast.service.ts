@@ -19,11 +19,10 @@ export interface HourData {
 }
 
 export enum WeatherForecast {
-    Rainy = "RAINY",
-    VeryRainy = "HEAVY_RAIN",
-    Sunny = "SUNNY",
-    Cloudy = "CLOUDY",
-    PartialCloudy = "PARTIAL_CLOUDY"
+    Rainy = "rainy",
+    VeryRainy = "heavy_rainy",
+    Cloudy = "cloudy",
+    PartialCloudy = "partial_cloudy"
 }
 
 export enum WindLevel {
@@ -51,12 +50,7 @@ export class WeatherForecastService {
         let timestamps: string[] = []
         let data: ForecastData = []
 
-        const forecastarray = ["RAINY",
-            "HEAVY_RAIN",
-            "SUNNY",
-            "CLOUDY",
-            "PARTIAL_CLOUDY"]
-
+        const forecastarray = ["rainy", "heavy_rainy", "cloudy", "partial_cloudy"]
         const windlevelarray = ["Słaby", "Umiar.", "Silny"]
 
         let i = 0
@@ -80,14 +74,17 @@ export class WeatherForecastService {
                 return day.timestamp.getTime() === b.getTime()
             }).data
 
+            const windDir = Math.floor(Math.abs(Math.sin(i * 0.03 * Math.PI)) * 7)
+            console.log(windDir)
+
             dayData.push({
                 timestamp: a,
                 forecast: (forecastarray[Math.floor(Math.random() * forecastarray.length)]) as WeatherForecast,
-                temperature: Math.floor(Math.random() * 22),
-                rainfall: Math.floor(Math.random() * 2.5),
-                windDirection: Math.floor(Math.random() * 8),
+                temperature: Math.floor(Math.sin(i * 0.1 * Math.PI) * 6 + (Math.random() * 2) - 1),
+                rainfall: Math.round(Math.random() * 2.5 * 10) / 10,
+                windDirection: windDir,
                 windLevel: (windlevelarray[Math.floor(Math.random() * windlevelarray.length)]) as WindLevel,
-                pressure: Math.floor(Math.random() * 10) + 1020,
+                pressure: Math.floor(Math.sin(i * 0.1 * Math.PI) * 2) * -1 + 1012,
                 windSpeed: Math.floor(Math.random() * 25)
             })
         }
