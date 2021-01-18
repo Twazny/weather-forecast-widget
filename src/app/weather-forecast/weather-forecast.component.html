@@ -1,86 +1,108 @@
-<div class="chart-content">
-    <div *ngFor="let dayData of forecastData" class="day-container">
-        <div class="day-cell">
-            {{dayData.timestamp}}
+<div class="main-container">
+    <div class="legend">
+        <div style="height: 35px;">Dzień</div>
+        <div style="height: 60px;">Godzina</div>
+        <div style="height: 70px;">Prognoza</div>
+        <div style="height: 220px;">Temperatura</div>
+        <div style="height: 120px;">Opady</div>
+        <div style="height: 120px;">Kierunek<br>wiatru</div>
+        <div style="height: 100px;">Prędkość<br>wiatru</div>
+        <div style="height: 200px;">Ciśnienie</div>
+    </div>
+    <div class="chart-container" 
+        [ngStyle]="{
+            'width': timeWindow*columnWidth + 'px', 
+            'padding-left': leftBounce + 'px',
+            'padding-right': rightBounce + 'px',
+            'transition': !leftBounce && !rightBounce ? 'padding-left 1s, padding-right 1s' : 'none'
+        }" style="position: relative;">
+        <!-- (mousemove)="onMouseMove($event)" -->
+        <div class="overlay" #overlay
+            (mousedown)="onMouseDown($event)"
+            
+            (mouseup)="onMouseUp($event)"
+            (mouseleave)="onMouseLeave($event)"
+        >
+            <button class='nav-button nav-button-left' (click)="onButtonScroll('left')">
+                <svg height="25" width="25">
+                    <polygon points="0,12.5 25,25 25,0"/>
+                </svg>
+            </button>
+            <button class='nav-button nav-button-right' (click)="onButtonScroll('right')">
+                <svg height="25" width="25">
+                    <polygon points="0,25 25,12.5 0,0"/>
+                </svg>
+            </button>
         </div>
-        <div class="column" *ngFor="let hourData of dayData.data">
-            <div class="hour-cell">
-                {{hourData.timestamp | date: 'HH:mm'}}
-            </div>
-            <div class="forecast-cell">
-                <img src="assets/cloudy.png">
-            </div>
-            <div class="temperature-cell"></div>
-            <div class="rainfall-cell">
-                <div 
-                    class="rainfall-chart" 
-                    [ngStyle]="{'height': hourData.rainfall * 100/5 + '%'}"
-                >
-                    <span>{{ hourData.rainfall }} mm</span>
+        <div 
+            class="chart-scroll" 
+            [ngClass]="{'hidden': !scrolling}"
+            [ngStyle]="{
+                'scroll-behavior': true ? 'unset' : 'smooth',
+                'scroll-snap-type': true ? 'none' : 'x mandatory'
+            }"
+            #scrollElement 
+            (scroll)="onScroll($event)"
+        >    
+            <div class="chart-content">
+                <div *ngFor="let dayData of forecastData; index as i" class="day-container">
+                    <div class="day-cell">
+                        <span *ngIf="i===1">JUTRO</span>
+                        <span *ngIf="i>1">{{dayData.timestamp.toLocaleDateString()}}</span>
+                    </div>
+                    <div class="column" *ngFor="let hourData of dayData.data">
+                        <div class="hour-cell">
+                            {{hourData.timestamp | date: 'HH:mm'}}
+                        </div>
+                        <div class="forecast-cell">
+                            <img [src]="'assets/' + hourData.forecast + '.png'">
+                        </div>
+                        <div class="temperature-cell"></div>
+                        <div class="rainfall-cell">
+                            <div 
+                                class="rainfall-chart" 
+                                [ngStyle]="{'height': hourData.rainfall * 75/rainfallMax + '%'}"
+                            >
+                                <span>{{ hourData.rainfall | number:undefined:'pl' }} mm</span>
+                            </div>
+                        </div>
+                        <div class="wind-dir-cell">
+                            <div class="wind-arrow">
+                                <img 
+                                    src="assets/wind-arrow.png" 
+                                    [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
+                                >
+                            </div>
+                            <span>{{ hourData.windDirection | windDirection}}</span>
+                        </div>
+                        <div class="wind-speed-cell">
+                            <span>{{hourData.windLevel}}</span>
+                            <span>{{hourData.windSpeed}} km/h</span>
+                        </div>
+                        <div class="pressure-cell"></div>
+                    </div>
                 </div>
+                <app-line-chart 
+                    [values]="tempValues"
+                    [color]="'#f9d348'"
+                    [unit]="'°'"
+                    [columnWidth]="columnWidth"
+                    [top]="'165px'"
+                    [fontSize]="'2em'"
+                    [height]="'220px'"
+                ></app-line-chart>
+                <app-line-chart 
+                    [values]="pressValues"
+                    [color]="'black'"
+                    [unit]="' hPa'"
+                    [columnWidth]="columnWidth"
+                    [top]="'725px'"
+                    [fontSize]="'1.3em'"
+                ></app-line-chart>
             </div>
-            <div class="wind-dir-cell">
-                <div class="wind-arrow">
-                    <img 
-                        src="assets/wind-arrow.PNG" 
-                        [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
-                    >
-                </div>
-                <span>{{ hourData.windDirection | windDirection}}</span>
-            </div>
-            <div class="wind-speed-cell">
-                <span>{{hourData.windLevel}}</span>
-                <br>
-                <span>{{hourData.windSpeed}} km/h</span>
-            </div>
-            <div class="pressure-cell"></div>
         </div>
     </div>
+        
     
-    <svg class="temperature-chart">
-        <g *ngFor="let value of tempValues; index as i">
-            <line *ngIf="tempValues[i+1]"
-                [attr.x1]="getLineX(i)" 
-                [attr.y1]="getTempLineY(value)" 
-                [attr.x2]="getLineX(i + 1)" 
-                [attr.y2]="getTempLineY(tempValues[i+1])">  
-            </line>    
-            <circle 
-                [attr.cx]="getLineX(i)" 
-                [attr.cy]="getTempLineY(value)" 
-                r="8">
-            </circle>
-            <text 
-                [attr.x]="getLineX(i)" 
-                [attr.y]="getTempLineY(value) - 25"
-                dominant-baseline="middle"
-                text-anchor="middle"
-            >
-                {{value}}°
-            </text>
-        </g>
-    </svg>
-    <svg class="pressure-chart">
-        <g *ngFor="let value of pressValues; index as i">
-            <line *ngIf="pressValues[i+1]"
-                [attr.x1]="getLineX(i)" 
-                [attr.y1]="getPressLineY(value)" 
-                [attr.x2]="getLineX(i + 1)" 
-                [attr.y2]="getPressLineY(pressValues[i+1])">  
-            </line>    
-            <circle 
-                [attr.cx]="getLineX(i)" 
-                [attr.cy]="getPressLineY(value)" 
-                r="8">
-            </circle>
-            <text 
-                [attr.x]="getLineX(i)" 
-                [attr.y]="getPressLineY(value) - 25"
-                dominant-baseline="middle"
-                text-anchor="middle"
-            >
-                {{value}} hPa
-            </text>
-        </g>
-    </svg>
+    
 </div>
