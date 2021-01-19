@@ -84,7 +84,6 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
       event.preventDefault()
       const x = event.pageX;
       const walk = x - this.scrollStartX;
-
       const diff = this.currScrollLeft - walk
 
       if (diff <= 0) {
@@ -94,8 +93,8 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
         this.leftBounce = 0
       }
 
-      if (this.scroll.offsetWidth + diff > this.scroll.scrollWidth) {
-        this.rightBounce = -walk
+      if (this.scroll.offsetWidth + diff + this.rightBounce > this.scroll.scrollWidth) {
+        this.rightBounce = this.scroll.offsetWidth + diff + this.rightBounce - this.scroll.scrollWidth
       } else {
         this.scroll.scrollLeft = diff
         this.rightBounce = 0
