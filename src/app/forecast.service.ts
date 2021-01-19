@@ -75,7 +75,6 @@ export class WeatherForecastService {
             }).data
 
             const windDir = Math.floor(Math.abs(Math.sin(i * 0.03 * Math.PI)) * 7)
-            console.log(windDir)
 
             dayData.push({
                 timestamp: a,

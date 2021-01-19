@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import pl from '@angular/common/locales/pl';
 import { fromEvent, interval } from 'rxjs';
 import { throttle } from 'rxjs/operators'
-import { ForecastData, HourData } from '../forecast.service'
+import { ForecastData } from '../forecast.service'
 
 registerLocaleData(pl, 'pl');
 
@@ -12,14 +12,14 @@ registerLocaleData(pl, 'pl');
   templateUrl: './weather-forecast.component.html',
   styleUrls: ['./weather-forecast.component.scss']
 })
-export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChanges {
+export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input('data') forecastData: ForecastData
-  @Input() timeWindow = 8
-  @Input() columnWidth = 120
 
   @ViewChild('scrollElement') scrollRef: ElementRef
   @ViewChild('overlay') overaly: ElementRef
 
+  columnWidth = 120
+  timeWindow = 8
   tempValues: number[] = []
   pressValues: number[] = []
   rainfallValues: number[] = []
@@ -34,10 +34,24 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
   position = 0
   scrollPositions: number
 
-  constructor() { }
+  resizeObserver: ResizeObserver
+
+  constructor(
+    private hostRef: ElementRef,
+    private zone: NgZone
+  ) { }
 
   ngOnInit(): void {
     this.prepareValues()
+    this.resizeObserver = new ResizeObserver(entries => {
+      this.zone.run(() => {
+        const hostWidth = entries[0].contentRect.width
+        const contentWidth = hostWidth - 140
+        this.timeWindow = Math.floor(contentWidth / this.columnWidth)
+        this.scrollPositions = this.rainfallValues.length - this.timeWindow
+      })
+    })
+    this.resizeObserver.observe(this.hostRef.nativeElement)
   }
 
   ngAfterViewInit(): void {
@@ -48,6 +62,10 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
 
   ngOnChanges(): void {
     this.prepareValues()
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver.unobserve(this.hostRef.nativeElement)
   }
 
   onButtonScroll(dir: 'left' | 'right'): void {
@@ -93,8 +111,9 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
         this.leftBounce = 0
       }
 
-      if (this.scroll.offsetWidth + diff + this.rightBounce > this.scroll.scrollWidth) {
-        this.rightBounce = this.scroll.offsetWidth + diff + this.rightBounce - this.scroll.scrollWidth
+      const rw = this.scroll.offsetWidth + diff + this.rightBounce
+      if (rw > this.scroll.scrollWidth) {
+        this.rightBounce = rw - this.scroll.scrollWidth
       } else {
         this.scroll.scrollLeft = diff
         this.rightBounce = 0
