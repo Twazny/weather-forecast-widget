@@ -83,12 +83,11 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
   }
 
   onScroll(event: Event): void {
-    if (!this.scrolling) {
-      this.scrolling = true
-      setTimeout(() => {
-        this.scrolling = false
-      }, 1000)
-    }
+    if (this.scrolling) { return }
+    this.scrolling = true
+    setTimeout(() => {
+      this.scrolling = false
+    }, 1000)
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -98,51 +97,49 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
   }
 
   onMouseMove(event: MouseEvent): void {
-    if (this.dragging) {
-      event.preventDefault()
-      const x = event.pageX;
-      const walk = x - this.scrollStartX;
-      const diff = this.currScrollLeft - walk
+    if (!this.dragging) { return }
+    event.preventDefault()
+    const x = event.pageX;
+    const walk = x - this.scrollStartX;
+    const diff = this.currScrollLeft - walk
 
-      if (diff <= 0) {
-        this.leftBounce = -diff
-      } else {
-        this.scroll.scrollLeft = diff
-        this.leftBounce = 0
-      }
+    if (diff <= 0) {
+      this.leftBounce = -diff
+    } else {
+      this.scroll.scrollLeft = diff
+      this.leftBounce = 0
+    }
 
-      const rw = this.scroll.offsetWidth + diff + this.rightBounce
-      if (rw > this.scroll.scrollWidth) {
-        this.rightBounce = rw - this.scroll.scrollWidth
-      } else {
-        this.scroll.scrollLeft = diff
-        this.rightBounce = 0
-      }
+    const rw = this.scroll.offsetWidth + diff + this.rightBounce
+    if (rw > this.scroll.scrollWidth) {
+      this.rightBounce = rw - this.scroll.scrollWidth
+    } else {
+      this.scroll.scrollLeft = diff
+      this.rightBounce = 0
     }
   }
 
   onMouseUp(event: MouseEvent): void {
-    this.dragging = false
-    this.leftBounce = 0
-    this.rightBounce = 0
-    this.scrollToNearest(event.pageX)
-
+    this.stopDrag()
   }
 
   onMouseLeave(event: MouseEvent): void {
-    if (this.dragging) {
-      this.dragging = false
-      this.leftBounce = 0
-      this.rightBounce = 0
-      this.scrollToNearest(event.pageX)
-    }
+    if (!this.dragging) { return }
+    this.stopDrag()
   }
 
   private get scroll(): HTMLDivElement {
     return this.scrollRef.nativeElement
   }
 
-  private scrollToNearest(pageX: number): void {
+  private stopDrag(): void {
+    this.dragging = false
+    this.leftBounce = 0
+    this.rightBounce = 0
+    this.scrollToNearest()
+  }
+
+  private scrollToNearest(): void {
     let pos = Math.round(this.scroll.scrollLeft / this.columnWidth)
     this.scroll.scrollTo({ left: pos * this.columnWidth, behavior: 'smooth' })
     if (pos > this.scrollPositions) {

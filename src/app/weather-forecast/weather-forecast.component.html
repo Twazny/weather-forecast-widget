@@ -15,14 +15,11 @@
             'padding-left': leftBounce + 'px',
             'padding-right': rightBounce + 'px',
             'transition': !leftBounce && !rightBounce ? 'padding-left 1s, padding-right 1s' : 'none'
-        }" style="position: relative;">
-        <!-- (mousemove)="onMouseMove($event)" -->
+        }">
         <div class="overlay" #overlay
-            (mousedown)="onMouseDown($event)"
-            
+            (mousedown)="onMouseDown($event)" 
             (mouseup)="onMouseUp($event)"
-            (mouseleave)="onMouseLeave($event)"
-        >
+            (mouseleave)="onMouseLeave($event)">
             <button *ngIf="position !== 0" class='nav-button nav-button-left' (click)="onButtonScroll('left')">
                 <svg height="25" width="25">
                     <polygon points="0,12.5 25,25 25,0"/>
@@ -42,8 +39,7 @@
                 'scroll-snap-type': true ? 'none' : 'x mandatory'
             }"
             #scrollElement 
-            (scroll)="onScroll($event)"
-        >    
+            (scroll)="onScroll($event)">    
             <div class="chart-content">
                 <div *ngFor="let dayData of forecastData; index as i" class="day-container">
                     <div class="day-cell">
@@ -61,17 +57,14 @@
                         <div class="rainfall-cell">
                             <div 
                                 class="rainfall-chart" 
-                                [ngStyle]="{'height': hourData.rainfall * 75/rainfallMax + '%'}"
-                            >
+                                [ngStyle]="{'height': hourData.rainfall * 75/rainfallMax + '%'}">
                                 <span>{{ hourData.rainfall | number:undefined:'pl' }} mm</span>
                             </div>
                         </div>
                         <div class="wind-dir-cell">
                             <div class="wind-arrow">
-                                <img 
-                                    src="assets/wind-arrow.png" 
-                                    [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }"
-                                >
+                                <img src="assets/wind-arrow.png" 
+                                    [ngStyle]="{'transform': 'rotate(' + hourData.windDirection * 45 + 'deg)' }">
                             </div>
                             <span>{{ hourData.windDirection | windDirection}}</span>
                         </div>
@@ -102,7 +95,4 @@
             </div>
         </div>
     </div>
-        
-    
-    
 </div>
