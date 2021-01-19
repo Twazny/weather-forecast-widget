@@ -30,16 +30,14 @@
                     <polygon points="0,25 25,12.5 0,0"/>
                 </svg>
             </button>
+            <div class="scrollbar" [ngClass]="{'hidden': !scrolling}"><div [ngStyle]="{
+                'left': 100 * scrollElement.scrollLeft / scrollElement.scrollWidth  + '%',
+                'width': 100  * scrollElement.offsetWidth / scrollElement.scrollWidth  + '%'
+            }" class="scrollbar-thumb"></div></div>    
         </div>
-        <div 
-            class="chart-scroll" 
-            [ngClass]="{'hidden': !scrolling}"
-            [ngStyle]="{
-                'scroll-behavior': true ? 'unset' : 'smooth',
-                'scroll-snap-type': true ? 'none' : 'x mandatory'
-            }"
-            #scrollElement 
-            (scroll)="onScroll($event)">    
+        <div
+            #scrollElement  
+            class="chart-scroll">    
             <div class="chart-content">
                 <div *ngFor="let dayData of forecastData; index as i" class="day-container">
                     <div class="day-cell">

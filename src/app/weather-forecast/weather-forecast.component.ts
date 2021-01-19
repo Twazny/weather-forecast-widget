@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import pl from '@angular/common/locales/pl';
-import { fromEvent, interval } from 'rxjs';
+import { fromEvent, interval, Subscription } from 'rxjs';
 import { throttle } from 'rxjs/operators'
 import { ForecastData } from '../forecast.service'
 
@@ -35,10 +35,14 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
   scrollPositions: number
 
   resizeObserver: ResizeObserver
+  scrollSubs: Subscription
+  mouseMoveSubs: Subscription
+  timeOutRef: number
 
   constructor(
     private hostRef: ElementRef,
-    private zone: NgZone
+    private zone: NgZone,
+    private changeDet: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -55,9 +59,14 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
   }
 
   ngAfterViewInit(): void {
-    fromEvent(this.overaly.nativeElement, 'mousemove').pipe(
+    this.changeDet.detectChanges()
+    this.mouseMoveSubs = fromEvent(this.overaly.nativeElement, 'mousemove').pipe(
       throttle(event => interval(1))
     ).subscribe((event: MouseEvent) => this.onMouseMove(event))
+
+    this.scrollSubs = fromEvent(this.scrollRef.nativeElement, 'scroll').pipe(
+      throttle(event => interval(200))
+    ).subscribe((event: Event) => this.onScroll())
   }
 
   ngOnChanges(): void {
@@ -66,6 +75,8 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
 
   ngOnDestroy(): void {
     this.resizeObserver.unobserve(this.hostRef.nativeElement)
+    this.mouseMoveSubs.unsubscribe()
+    this.scrollSubs.unsubscribe()
   }
 
   onButtonScroll(dir: 'left' | 'right'): void {
@@ -82,11 +93,14 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
     })
   }
 
-  onScroll(event: Event): void {
-    if (this.scrolling) { return }
+  onScroll(): void {
+    if (this.timeOutRef) {
+      clearTimeout(this.timeOutRef)
+    }
     this.scrolling = true
-    setTimeout(() => {
+    this.timeOutRef = setTimeout(() => {
       this.scrolling = false
+      this.timeOutRef = null
     }, 1000)
   }
 
@@ -104,6 +118,7 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
     const diff = this.currScrollLeft - walk
 
     if (diff <= 0) {
+      this.onScroll()
       this.leftBounce = -diff
     } else {
       this.scroll.scrollLeft = diff
