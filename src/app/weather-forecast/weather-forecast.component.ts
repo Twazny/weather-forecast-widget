@@ -125,12 +125,18 @@ export class WeatherForecastComponent implements OnInit, AfterViewInit, OnChange
   }
 
   private scrollToNearest(pageX: number): void {
-    const pos = Math.round(this.scroll.scrollLeft / this.columnWidth)
+    let pos = Math.round(this.scroll.scrollLeft / this.columnWidth)
     this.scroll.scrollTo({ left: pos * this.columnWidth, behavior: 'smooth' })
+    if (pos > this.scrollPositions) {
+      pos = this.scrollPositions
+    }
     this.position = pos
   }
 
   private prepareValues(): void {
+    this.rainfallValues = []
+    this.pressValues = []
+    this.tempValues = []
     this.forecastData.forEach(dayData => {
       dayData.data.forEach(hourData => {
         this.tempValues.push(hourData.temperature)

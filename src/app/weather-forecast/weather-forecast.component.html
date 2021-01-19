@@ -23,12 +23,12 @@
             (mouseup)="onMouseUp($event)"
             (mouseleave)="onMouseLeave($event)"
         >
-            <button class='nav-button nav-button-left' (click)="onButtonScroll('left')">
+            <button *ngIf="position !== 0" class='nav-button nav-button-left' (click)="onButtonScroll('left')">
                 <svg height="25" width="25">
                     <polygon points="0,12.5 25,25 25,0"/>
                 </svg>
             </button>
-            <button class='nav-button nav-button-right' (click)="onButtonScroll('right')">
+            <button *ngIf="position !== scrollPositions" class='nav-button nav-button-right' (click)="onButtonScroll('right')">
                 <svg height="25" width="25">
                     <polygon points="0,25 25,12.5 0,0"/>
                 </svg>
